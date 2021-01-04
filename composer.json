@@ -1,0 +1,23 @@
+{
+        "name": "atk14/mini-yaml",
+        "type": "library",
+        "description": "Minimalistic YAML loader and dumper",
+        "keywords": ["YAML"],
+        "homepage": "https://github.com/atk14/MiniYaml",
+        "license": ["MIT"],
+        "authors": [
+                {
+                        "name": "ATK14 Development Team",
+                        "homepage": "https://github.com/orgs/atk14/people"
+                }
+        ],
+        "require": {
+                "php": ">=5.3.0"
+        },
+        "require-dev": {
+                "atk14/tester": "*"
+        },
+        "autoload": {
+                "classmap": ["src"]
+        }
+}
