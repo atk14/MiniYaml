@@ -1,6 +1,8 @@
 MiniYAML
 ========
 
+[![Build Status](https://app.travis-ci.com/atk14/MiniYaml.svg?branch=master)](https://app.travis-ci.com/atk14/MiniYaml)
+
 MiniYAML is a YAML dumper & loader.
 
 Usage
