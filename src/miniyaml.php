@@ -410,12 +410,12 @@ class miniYAML{
 
     if(is_null($str) && $this->nullable){
       $str = "NULL";
-    }elseif(is_numeric($str) || is_numeric(str_replace("_","",$str))){
+    }elseif(is_numeric($str) || is_numeric(str_replace("_","",(string)$str))){
       $str = $this->_escapeString($str);
     }else{
       $_escaped = false;
       foreach($patterns_to_escape as $pattern){
-        if(preg_match($pattern,$str)){
+        if(preg_match($pattern,(string)$str)){
           $str = $this->_escapeString($str);
           $_escaped = true;
           break;
@@ -468,7 +468,7 @@ class miniYAML{
   }
 
   function _escapeString($str){
-    return "\"".str_replace("\"","\\\"",$str)."\"";
+    return "\"".str_replace("\"","\\\"",(string)$str)."\"";
   }
 }
 // vim: set expandtab:
