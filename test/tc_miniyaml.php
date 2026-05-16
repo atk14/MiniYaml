@@ -293,6 +293,20 @@ key2: <?php echo $hodnota_2?>
 			"key1" => "yes",
 			"key2" => "don't know"
 		),$ar);
+
+		$exception_thrown = false;
+		try {
+			$ar = miniYAML::Load($data,array(
+				"interpret_php" => true,
+				"values" => array(
+					"!invalid_key!" => "bad_try",
+				)
+			));
+		}catch(Exception $e){
+			$exception_thrown = true;
+		}
+		$this->assertEquals(true,$exception_thrown);
+		$this->assertStringContains("Invalid variable name",$e->getMessage());
 	}
 
 	function test_white_char_exception(){

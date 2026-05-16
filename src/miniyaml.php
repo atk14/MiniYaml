@@ -133,6 +133,13 @@ class miniYAML{
 	* Note: Think of newline removal at the end of php end tag!
 	*/
 	static function InterpretPHP($__yaml,$__values = array()){
+    // Validate keys to prevent variable injection                                                                                                                                                        
+    foreach(array_keys($__values) as $__k){                                                                                                                                                                 
+      if(!preg_match('/^[a-zA-Z_][a-zA-Z0-9_]*$/', $__k)){
+        throw new InvalidArgumentException("Invalid variable name: $__k");                                                                                                                             
+      }                                                                                                                                                                                                 
+    }
+
 		foreach($__values as $__k => $__v){
 			eval("\$$__k = \$__v;");
 		}
