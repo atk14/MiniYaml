@@ -416,11 +416,9 @@ class miniYAML{
 		}elseif(is_numeric($str) || is_numeric(str_replace("_","",(string)$str))){
 			$str = $this->_escapeString($str);
 		}else{
-			$_escaped = false;
 			foreach($patterns_to_escape as $pattern){
 				if(preg_match($pattern,(string)$str)){
 					$str = $this->_escapeString($str);
-					$_escaped = true;
 					break;
 				}
 			}
