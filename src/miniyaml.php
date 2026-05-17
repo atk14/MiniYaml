@@ -133,11 +133,11 @@ class miniYAML{
 	* Note: Think of newline removal at the end of php end tag!
 	*/
 	static function InterpretPHP($__yaml,$__values = []){
-		// Validate keys to prevent variable injection                                                                                                                                                        
-		foreach(array_keys($__values) as $__k){                                                                                                                                                                 
+		// Validate keys to prevent variable injection
+		foreach(array_keys($__values) as $__k){
 			if(!preg_match('/^[a-zA-Z_][a-zA-Z0-9_]*$/', $__k)){
-				throw new InvalidArgumentException("Invalid variable name: $__k");                                                                                                                             
-			}                                                                                                                                                                                                 
+				throw new InvalidArgumentException("Invalid variable name: $__k");
+			}
 		}
 
 		foreach($__values as $__k => $__v){
@@ -147,7 +147,7 @@ class miniYAML{
 		ob_start();
 		eval("?".">".$__yaml);
 		$__yaml = ob_get_contents();
-		ob_end_clean();	
+		ob_end_clean();
 		error_reporting($__error_reporting);
 		return $__yaml;
 	}
@@ -445,15 +445,15 @@ class miniYAML{
 		$out = [];
 		foreach($ar as $_value){
 			if($this->_isIndexedArray($_value) && count($_value)>0){
-				$_dump = $this->_dumpIndexedArray($_value,$indent + 1); // "- "
+				$_dump = $this->_dumpIndexedArray($_value,$indent + 1);
 				$_prefix = $this->_dumpIndent($indent)."- ";
 				$out[] = $_prefix.substr($_dump,strlen($_prefix));
 			}elseif(is_array($_value) && count($_value)>0){
-				$_dump = $this->_dumpHashArray($_value,$indent + 1); // "- "
+				$_dump = $this->_dumpHashArray($_value,$indent + 1);
 				$_prefix = $this->_dumpIndent($indent)."- ";
 				$out[] = $_prefix.substr($_dump,strlen($_prefix));
 			}else{
-				$out[] = $this->_dumpIndent($indent)."- ".$this->_dumpVar($_value,$indent + 2); // "- "
+				$out[] = $this->_dumpIndent($indent)."- ".$this->_dumpVar($_value,$indent + 2);
 			}
 		}
 		return join("\n",$out);
