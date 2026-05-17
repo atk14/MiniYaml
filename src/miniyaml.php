@@ -157,7 +157,8 @@ class miniYAML{
 		$ar = explode("\n",$yaml);
 		$this->_Lines = [];
 		$got_structure_begin = false;
-		for($i=0;$i<count($ar);$i++){
+		$cnt = count($ar);
+		for($i=0;$i<$cnt;$i++){
 			if(trim($ar[$i]) == "---"){ // start of structure — may appear only once, at the beginning
 				if($got_structure_begin){ return null; }
 				$got_structure_begin = true;
@@ -213,7 +214,8 @@ class miniYAML{
 		if(!isset($lines)){ $lines = &$this->_Lines; }
 		$out = [];
 		$out[] = str_repeat(" ",$indent).substr($lines[$start_at],$indent);
-		for($i=$start_at+1;$i<count($lines);$i++){
+		$cnt = count($lines);
+		for($i=$start_at+1;$i<$cnt;$i++){
 			$_indent = $this->_getIndent($lines[$i]);
 			if($_indent<$indent){
 				break;
@@ -234,7 +236,8 @@ class miniYAML{
 	*/
 	protected function _cutOutBlock_Stripped($start_at,$indent,$lines = null){
 		$lines = $this->_cutOutBlock($start_at,$indent,$lines);
-		for($i=0;$i<count($lines);$i++){
+		$cnt = count($lines);
+		for($i=0;$i<$cnt;$i++){
 			$lines[$i] = substr($lines[$i],$indent);
 		}
 		return $lines;
@@ -291,7 +294,8 @@ class miniYAML{
 	protected function _readIndexedArray($block,&$lines_read){
 		$out = [];
 		$lines_read = 0;
-		for($i=0;$i<count($block);$i++){
+		$cnt = count($block);
+		for($i=0;$i<$cnt;$i++){
 			$line = $block[$i];
 			if(!preg_match("/^- /",$line)){
 				break;
@@ -315,7 +319,8 @@ class miniYAML{
 	protected function _readHashArray($block,&$lines_read){
 		$out = [];
 		$lines_read = 0;
-		for($i=0;$i<count($block);$i++){
+		$cnt = count($block);
+		for($i=0;$i<$cnt;$i++){
 			$line = $block[$i];
 			$next_line = null;
 			if(isset($block[$i+1])){ $next_line = $block[$i+1]; }
