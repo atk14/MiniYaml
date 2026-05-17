@@ -66,7 +66,7 @@ class miniYAML{
 
 	function __construct($options = []){
 		$options += [
-		  "nullable" => true, // Whether to consider strings null and NULL as true NULL?
+			"nullable" => true, // Whether to consider strings null and NULL as true NULL?
 		];
 
 		$this->nullable = $options["nullable"];
@@ -135,9 +135,9 @@ class miniYAML{
 	static function InterpretPHP($__yaml,$__values = []){
 		// Validate keys to prevent variable injection                                                                                                                                                        
 		foreach(array_keys($__values) as $__k){                                                                                                                                                                 
-		  if(!preg_match('/^[a-zA-Z_][a-zA-Z0-9_]*$/', $__k)){
-		    throw new InvalidArgumentException("Invalid variable name: $__k");                                                                                                                             
-		  }                                                                                                                                                                                                 
+			if(!preg_match('/^[a-zA-Z_][a-zA-Z0-9_]*$/', $__k)){
+				throw new InvalidArgumentException("Invalid variable name: $__k");                                                                                                                             
+			}                                                                                                                                                                                                 
 		}
 
 		foreach($__values as $__k => $__v){
@@ -158,15 +158,15 @@ class miniYAML{
 		$this->_Lines = [];
 		$got_structure_begin = false;
 		for($i=0;$i<count($ar);$i++){
-		  if(trim($ar[$i]) == "---"){ // start of structure — may appear only once, at the beginning
-		    if($got_structure_begin){ return null; }
-		    $got_structure_begin = true;
-		    continue;
-		  }
-		  if($this->_containsData($ar[$i])){
-		    $got_structure_begin = true;
-		    $this->_Lines[] = $ar[$i];
-		  }
+			if(trim($ar[$i]) == "---"){ // start of structure — may appear only once, at the beginning
+				if($got_structure_begin){ return null; }
+				$got_structure_begin = true;
+				continue;
+			}
+			if($this->_containsData($ar[$i])){
+				$got_structure_begin = true;
+				$this->_Lines[] = $ar[$i];
+			}
 		}
 
 		$out = $this->_readVar($this->_Lines,$lines_read);
@@ -177,7 +177,7 @@ class miniYAML{
 		//      - dve
 		//      klic:
 		if($lines_read!=count($this->_Lines)){
-		  return null;
+			return null;
 		}
 		return $out;
 	}
@@ -214,11 +214,11 @@ class miniYAML{
 		$out = [];
 		$out[] = str_repeat(" ",$indent).substr($lines[$start_at],$indent);
 		for($i=$start_at+1;$i<count($lines);$i++){
-		  $_indent = $this->_getIndent($lines[$i]);
-		  if($_indent<$indent){
-		    break;
-		  }
-		  $out[] = $lines[$i];
+			$_indent = $this->_getIndent($lines[$i]);
+			if($_indent<$indent){
+				break;
+			}
+			$out[] = $lines[$i];
 		}
 		return $out;
 	}
@@ -235,7 +235,7 @@ class miniYAML{
 	protected function _cutOutBlock_Stripped($start_at,$indent,$lines = null){
 		$lines = $this->_cutOutBlock($start_at,$indent,$lines);
 		for($i=0;$i<count($lines);$i++){
-		  $lines[$i] = substr($lines[$i],$indent);
+			$lines[$i] = substr($lines[$i],$indent);
 		}
 		return $lines;
 	}
@@ -251,7 +251,7 @@ class miniYAML{
 	*/
 	protected function _readVar($block,&$lines_read,$options = []){
 		$options += [
-		  "testing_for_array" => true
+			"testing_for_array" => true
 		];
 
 		if(is_string($block)){ $block = [$block]; }
@@ -261,20 +261,20 @@ class miniYAML{
 		if(count($block)==0){ return null; }
 
 		if($options["testing_for_array"]){
-		  if(preg_match("/^- /",$block[0])){
-		    return $this->_readIndexedArray($block,$lines_read);
-		  }
-		  if(preg_match("/^[^\\s\"]+?:(\\s+[^\\s].*|\\s*)$/",$block[0])){
-		    return $this->_readHashArray($block,$lines_read);
+			if(preg_match("/^- /",$block[0])){
+				return $this->_readIndexedArray($block,$lines_read);
+			}
+			if(preg_match("/^[^\\s\"]+?:(\\s+[^\\s].*|\\s*)$/",$block[0])){
+				return $this->_readHashArray($block,$lines_read);
 			}
 		}
 
 		if(count($block)==1){
-		  $lines_read = 1;
-		  $out = trim($block[0]);
-		  if($out == "[]"){ return []; }
-		  $this->_unescapeString($out);
-		  return $out;
+			$lines_read = 1;
+			$out = trim($block[0]);
+			if($out == "[]"){ return []; }
+			$this->_unescapeString($out);
+			return $out;
 		}
 
 		throw new Exception("Unexpected multi-line scalar value starting with: ".trim($block[0]));
@@ -292,13 +292,13 @@ class miniYAML{
 		$out = [];
 		$lines_read = 0;
 		for($i=0;$i<count($block);$i++){
-		  $line = $block[$i];
-		  if(!preg_match("/^- /",$line)){
-		    break;
-		  }
-		  $value_block = $this->_cutOutBlock_Stripped($i,2,$block);
-		  $out[] = $this->_readVar($value_block,$li);
-		  $i += $li-1; // -1 because the loop starts reading at the current line
+			$line = $block[$i];
+			if(!preg_match("/^- /",$line)){
+				break;
+			}
+			$value_block = $this->_cutOutBlock_Stripped($i,2,$block);
+			$out[] = $this->_readVar($value_block,$li);
+			$i += $li-1; // -1 because the loop starts reading at the current line
 		}
 		$lines_read = $i;
 		return $out;
@@ -316,31 +316,31 @@ class miniYAML{
 		$out = [];
 		$lines_read = 0;
 		for($i=0;$i<count($block);$i++){
-		  $line = $block[$i];
-		  $next_line = null;
-		  if(isset($block[$i+1])){ $next_line = $block[$i+1]; }
-		  if(!preg_match("/^(.+?):(.*)/",$line,$matches)){
-		    $i--;
-		    break;
-		  }
-		  $key = $matches[1];
-		  $_values = trim($matches[2]);
-		  $next_line_indent = $this->_getIndent($next_line);
-		  if($_values === "|" || $_values === ">"){
-		    $value_block = $this->_cutOutBlock_Stripped($i+1,$next_line_indent,$block);
-		    $i += count($value_block);
-		    $value = $_values === "|" ? implode("\n",$value_block) : implode(" ",$value_block);
-		  }elseif($next_line_indent>0 || preg_match("/^- /",(string)$next_line)){
-		    $value_block = $this->_cutOutBlock_Stripped($i+1,$next_line_indent,$block);
-		    $value = $this->_readVar($value_block,$li);
-		    $i += $li;
-		  }else{
-		    $value = $this->_readVar($_values,$li,["testing_for_array" => false]);
-		  }
+			$line = $block[$i];
+			$next_line = null;
+			if(isset($block[$i+1])){ $next_line = $block[$i+1]; }
+			if(!preg_match("/^(.+?):(.*)/",$line,$matches)){
+				$i--;
+				break;
+			}
+			$key = $matches[1];
+			$_values = trim($matches[2]);
+			$next_line_indent = $this->_getIndent($next_line);
+			if($_values === "|" || $_values === ">"){
+				$value_block = $this->_cutOutBlock_Stripped($i+1,$next_line_indent,$block);
+				$i += count($value_block);
+				$value = $_values === "|" ? implode("\n",$value_block) : implode(" ",$value_block);
+			}elseif($next_line_indent>0 || preg_match("/^- /",(string)$next_line)){
+				$value_block = $this->_cutOutBlock_Stripped($i+1,$next_line_indent,$block);
+				$value = $this->_readVar($value_block,$li);
+				$i += $li;
+			}else{
+				$value = $this->_readVar($_values,$li,["testing_for_array" => false]);
+			}
 			if(preg_match('/^\s/',$key)){
 				throw new Exception("token cannot begin with tabulator or other white character on line: $line");
 			}
-		  $out[$key] = $value;
+			$out[$key] = $value;
 		}
 		$lines_read = $i;
 		return $out;
@@ -361,14 +361,14 @@ class miniYAML{
 
 	protected function _unescapeString(&$str){
 		if(preg_match('/^("(.*)"|\'(.*)\')/',$str,$matches)){
-		  $str = end($matches);
-		  $str = preg_replace('/(\'\'|\\\\\')/',"'",$str);
-		  $str = preg_replace('/\\\\"/','"',$str);
-		  return true;
+			$str = end($matches);
+			$str = preg_replace('/(\'\'|\\\\\')/',"'",$str);
+			$str = preg_replace('/\\\\"/','"',$str);
+			return true;
 		}
 		if($this->nullable && ($str==="null" || $str==="NULL")){
-		   $str = null;
-		   return true;
+			 $str = null;
+			 return true;
 		}
 		return false;
 	}
@@ -380,50 +380,50 @@ class miniYAML{
 	protected function _dumpVar($var,$indent = 0){
 		$out = [];
 		if($this->_isIndexedArray($var)){
-		  $out[] = count($var)==0 ? "[]" : "";
-		  $out[] = $this->_dumpIndexedArray($var,$indent); // indexed arrays are printed at the same indent level
+			$out[] = count($var)==0 ? "[]" : "";
+			$out[] = $this->_dumpIndexedArray($var,$indent); // indexed arrays are printed at the same indent level
 		}elseif(is_array($var)){
-		  $out[] = "";
-		  $out[] = $this->_dumpHashArray($var,$indent + 1);
+			$out[] = "";
+			$out[] = $this->_dumpHashArray($var,$indent + 1);
 		}elseif(is_string($var) && strpos($var,"\n") !== false){
-		  $prefix = $this->_dumpIndent($indent + 1);
-		  $lines = explode("\n",$var);
-		  foreach($lines as &$line){ $line = $prefix.$line; }
-		  $out[] = "|\n".implode("\n",$lines);
+			$prefix = $this->_dumpIndent($indent + 1);
+			$lines = explode("\n",$var);
+			foreach($lines as &$line){ $line = $prefix.$line; }
+			$out[] = "|\n".implode("\n",$lines);
 		}else{
-		  $out[] = $this->_dumpString($var); // $indent intentionally omitted — indent is placed before the key
+			$out[] = $this->_dumpString($var); // $indent intentionally omitted — indent is placed before the key
 		}
 		return join("\n",$out);
 	}
 
 	protected function _dumpString($str,$indent = 0){
 		$patterns_to_escape = [
-		  "/^\\s+/", "/\\s+$/","/\\n/",
-		  "/^yes$/i", "/^on$/i", "/^\\+$/", "/^y$/", "/^true$/i",
-		  "/^no$/i", "/^off$/i", "/^-$/", "/^n$/", "/^false$/i",
-		  "/^null$/i", "/^~$/", "/^$/",
-		  "/^\\-?.inf$/i", "/^.nan$/i",
-		  "/^\"/", "/^'/", "/#/",
-		  "/^{/", "/^}/", "/^\\[/", "/^\\]/", "/^=$/", "/^\\?$/", "/^\\|/", "/^>/", "/^<<$/",
-		  "/^!/", "/^\\*/", "/^\\&/",
+			"/^\\s+/", "/\\s+$/","/\\n/",
+			"/^yes$/i", "/^on$/i", "/^\\+$/", "/^y$/", "/^true$/i",
+			"/^no$/i", "/^off$/i", "/^-$/", "/^n$/", "/^false$/i",
+			"/^null$/i", "/^~$/", "/^$/",
+			"/^\\-?.inf$/i", "/^.nan$/i",
+			"/^\"/", "/^'/", "/#/",
+			"/^{/", "/^}/", "/^\\[/", "/^\\]/", "/^=$/", "/^\\?$/", "/^\\|/", "/^>/", "/^<<$/",
+			"/^!/", "/^\\*/", "/^\\&/",
 			"/:\s/",
 			"/^:/",
 			"/:$/",
 		];
 
 		if(is_null($str) && $this->nullable){
-		  $str = "NULL";
+			$str = "NULL";
 		}elseif(is_numeric($str) || is_numeric(str_replace("_","",(string)$str))){
-		  $str = $this->_escapeString($str);
+			$str = $this->_escapeString($str);
 		}else{
-		  $_escaped = false;
-		  foreach($patterns_to_escape as $pattern){
-		    if(preg_match($pattern,(string)$str)){
-		      $str = $this->_escapeString($str);
-		      $_escaped = true;
-		      break;
-		    }
-		  }
+			$_escaped = false;
+			foreach($patterns_to_escape as $pattern){
+				if(preg_match($pattern,(string)$str)){
+					$str = $this->_escapeString($str);
+					$_escaped = true;
+					break;
+				}
+			}
 		}
 		return $this->_dumpIndent($indent).$str;
 	}
@@ -437,18 +437,18 @@ class miniYAML{
 	protected function _dumpIndexedArray($ar,$indent){
 		$out = [];
 		foreach($ar as $_value){
-		  if($this->_isIndexedArray($_value) && count($_value)>0){
-		    $_dump = $this->_dumpIndexedArray($_value,$indent + 1); // "- "
-		    $_prefix = $this->_dumpIndent($indent)."- ";
-		    $out[] = $_prefix.substr($_dump,strlen($_prefix));
-		  }elseif(is_array($_value) && count($_value)>0){
-		    $_dump = $this->_dumpHashArray($_value,$indent + 1); // "- "
-		    $_prefix = $this->_dumpIndent($indent)."- ";
-		    $out[] = $_prefix.substr($_dump,strlen($_prefix));
-		    //$out[] = $_prefix.$_dump;
-		  }else{
-		    $out[] = $this->_dumpIndent($indent)."- ".$this->_dumpVar($_value,$indent + 2); // "- "
-		  }
+			if($this->_isIndexedArray($_value) && count($_value)>0){
+				$_dump = $this->_dumpIndexedArray($_value,$indent + 1); // "- "
+				$_prefix = $this->_dumpIndent($indent)."- ";
+				$out[] = $_prefix.substr($_dump,strlen($_prefix));
+			}elseif(is_array($_value) && count($_value)>0){
+				$_dump = $this->_dumpHashArray($_value,$indent + 1); // "- "
+				$_prefix = $this->_dumpIndent($indent)."- ";
+				$out[] = $_prefix.substr($_dump,strlen($_prefix));
+				//$out[] = $_prefix.$_dump;
+			}else{
+				$out[] = $this->_dumpIndent($indent)."- ".$this->_dumpVar($_value,$indent + 2); // "- "
+			}
 		}
 		return join("\n",$out);
 	}
@@ -456,7 +456,7 @@ class miniYAML{
 	protected function _dumpHashArray($ar,$indent){
 		$out = [];
 		foreach($ar as $_key => $_value){
-		  $out[] = $this->_dumpIndent($indent).$this->_dumpString($_key).": ".$this->_dumpVar($_value,$indent);
+			$out[] = $this->_dumpIndent($indent).$this->_dumpString($_key).": ".$this->_dumpVar($_value,$indent);
 		}
 		return join("\n",$out);
 	}
@@ -470,4 +470,3 @@ class miniYAML{
 		return "\"".str_replace("\"","\\\"",(string)$str)."\"";
 	}
 }
-// vim: set expandtab:
