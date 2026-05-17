@@ -61,13 +61,13 @@
 */
 class miniYAML{
 
-	protected $_Lines = array();
+	protected $_Lines = [];
 	protected $nullable = true;
 
-	function __construct($options = array()){
-		$options += array(
+	function __construct($options = []){
+		$options += [
 		  "nullable" => true, // Whether to consider strings null and NULL as true NULL?
-		);
+		];
 
 		$this->nullable = $options["nullable"];
 	}
@@ -80,11 +80,11 @@ class miniYAML{
 	* @param string $yaml      zapis struktury v YAML
 	* @return array
 	*/
-	static function Load($yaml,$options = array()){
-		$options = array_merge(array(
+	static function Load($yaml,$options = []){
+		$options += [
 			"interpret_php" => false,
-			"values" => array(),
-		),$options);
+			"values" => [],
+		];
 
 		if($options["interpret_php"]){
 			$yaml = miniYAML::InterpretPHP($yaml,$options["values"]);
@@ -107,7 +107,7 @@ class miniYAML{
 	* @param array $ar
 	* @return string
 	*/
-	static function Dump($ar,$options = array()){
+	static function Dump($ar,$options = []){
 		$obj = new miniYAML($options);
 		$out = "---";
 		if($obj->_isIndexedArray($ar)){
@@ -125,14 +125,14 @@ class miniYAML{
 	*		login: <?= $login ?>
 	*
 	*		password: <?= $password ?>
-	*	',array(
+	*	',[
 	*		"login" => "admin",
 	*		"password" => "magic"
-	*	));
+	*	]);
 	*
 	* Note: Think of newline removal at the end of php end tag!
 	*/
-	static function InterpretPHP($__yaml,$__values = array()){
+	static function InterpretPHP($__yaml,$__values = []){
 		// Validate keys to prevent variable injection                                                                                                                                                        
 		foreach(array_keys($__values) as $__k){                                                                                                                                                                 
 		  if(!preg_match('/^[a-zA-Z_][a-zA-Z0-9_]*$/', $__k)){
@@ -155,9 +155,9 @@ class miniYAML{
 	function _load($yaml){
 		$yaml = str_replace("\r","",$yaml);
 		$ar = explode("\n",$yaml);
-		$this->_Lines = array();
+		$this->_Lines = [];
 		$got_structure_begin = false;
-		for($i=0;$i<sizeof($ar);$i++){
+		for($i=0;$i<count($ar);$i++){
 		  if(trim($ar[$i]) == "---"){ // zacatek nove struktury - muze byt v zapisu pouze 1x a to na jejim zacatku
 		    if($got_structure_begin){ return null; }
 		    $got_structure_begin = true;
@@ -176,7 +176,7 @@ class miniYAML{
 		//      - jedna
 		//      - dve
 		//      klic:
-		if($lines_read!=sizeof($this->_Lines)){
+		if($lines_read!=count($this->_Lines)){
 		  return null;
 		}
 		return $out;
@@ -226,9 +226,9 @@ class miniYAML{
 	*/
 	function _cutOutBlock($start_at,$indent,$lines = null){
 		if(!isset($lines)){ $lines = &$this->_Lines; }
-		$out = array();
+		$out = [];
 		$out[] = str_repeat(" ",$indent).substr($lines[$start_at],$indent);
-		for($i=$start_at+1;$i<sizeof($lines);$i++){
+		for($i=$start_at+1;$i<count($lines);$i++){
 		  $_indent = $this->_getIndent($lines[$i]);
 		  if($_indent<$indent){
 		    break;
@@ -249,7 +249,7 @@ class miniYAML{
 	*/
 	function _cutOutBlock_Stripped($start_at,$indent,$lines = null){
 		$lines = $this->_cutOutBlock($start_at,$indent,$lines);
-		for($i=0;$i<sizeof($lines);$i++){
+		for($i=0;$i<count($lines);$i++){
 		  $lines[$i] = substr($lines[$i],$indent);
 		}
 		return $lines;
@@ -264,16 +264,16 @@ class miniYAML{
 	* @param array $options      parametry nacitani
 	* @return mixed              indexove pole, hash pole nebo string
 	*/
-	function _readVar($block,&$lines_read,$options = array()){
-		$options = array_merge(array(
+	function _readVar($block,&$lines_read,$options = []){
+		$options += [
 		  "testing_for_array" => true
-		),$options);
+		];
 
-		if(is_string($block)){ $block = array($block); }
+		if(is_string($block)){ $block = [$block]; }
 
 		$lines_read = 0;
 
-		if(sizeof($block)==0){ return null; }
+		if(count($block)==0){ return null; }
 
 		if($options["testing_for_array"]){
 		  if(preg_match("/^- /",$block[0])){
@@ -284,10 +284,10 @@ class miniYAML{
 			}
 		}
 
-		if(sizeof($block)==1){ // toto je spatne!!!! zde zapadne i indexove pole o velikosti 1
+		if(count($block)==1){ // toto je spatne!!!! zde zapadne i indexove pole o velikosti 1
 		  $lines_read = 1;
 		  $out = trim($block[0]);
-		  if($out == "[]"){ return array(); }
+		  if($out == "[]"){ return []; }
 		  $this->_unescapeString($out);
 		  return $out;
 		}
@@ -302,9 +302,9 @@ class miniYAML{
 	* @return array
 	*/
 	function _readIndexedArray($block,&$lines_read){
-		$out = array();
+		$out = [];
 		$lines_read = 0;
-		for($i=0;$i<sizeof($block);$i++){
+		for($i=0;$i<count($block);$i++){
 		  $line = $block[$i];
 		  if(!preg_match("/^- /",$line)){
 		    break;
@@ -326,9 +326,9 @@ class miniYAML{
 	* @return array
 	*/
 	function _readHashArray($block,&$lines_read){
-		$out = array();
+		$out = [];
 		$lines_read = 0;
-		for($i=0;$i<sizeof($block);$i++){
+		for($i=0;$i<count($block);$i++){
 		  $line = $block[$i];
 		  $next_line = null;
 		  if(isset($block[$i+1])){ $next_line = $block[$i+1]; }
@@ -344,7 +344,7 @@ class miniYAML{
 		    $value = $this->_readVar($value_block,$li);
 		    $i += $li;
 		  }else{
-		    $value = $this->_readVar($_values,$li,array("testing_for_array" => false));
+		    $value = $this->_readVar($_values,$li,["testing_for_array" => false]);
 		  }
 			if(preg_match('/^\s/',$key)){
 				throw new Exception("token cannot begin with tabulator or other white character on line: $line");
@@ -387,9 +387,9 @@ class miniYAML{
 	 */
 
 	function _dumpVar($var,$indent = 0){
-		$out = array();
+		$out = [];
 		if($this->_isIndexedArray($var)){
-		  $out[] = sizeof($var)==0 ? "[]" : "";
+		  $out[] = count($var)==0 ? "[]" : "";
 		  $out[] = $this->_dumpIndexedArray($var,$indent); // indexove pole se tiskne se stejnym indentem
 		}elseif(is_array($var)){
 		  $out[] = "";
@@ -401,7 +401,7 @@ class miniYAML{
 	}
 
 	function _dumpString($str,$indent = 0){
-		$patterns_to_escape = array(
+		$patterns_to_escape = [
 		  "/^\\s+/", "/\\s+$/","/\\n/",
 		  "/^yes$/i", "/^on$/i", "/^\\+$/", "/^y$/", "/^true$/i",
 		  "/^no$/i", "/^off$/i", "/^-$/", "/^n$/", "/^false$/i",
@@ -413,7 +413,7 @@ class miniYAML{
 			"/:\s/",
 			"/^:/",
 			"/:$/",
-		);
+		];
 
 		if(is_null($str) && $this->nullable){
 		  $str = "NULL";
@@ -439,13 +439,13 @@ class miniYAML{
 	}
 
 	function _dumpIndexedArray($ar,$indent){
-		$out = array();
+		$out = [];
 		foreach($ar as $_value){
-		  if($this->_isIndexedArray($_value) && sizeof($_value)>0){
+		  if($this->_isIndexedArray($_value) && count($_value)>0){
 		    $_dump = $this->_dumpIndexedArray($_value,$indent + 1); // "- "
 		    $_prefix = $this->_dumpIndent($indent)."- ";
 		    $out[] = $_prefix.substr($_dump,strlen($_prefix));
-		  }elseif(is_array($_value) && sizeof($_value)>0){
+		  }elseif(is_array($_value) && count($_value)>0){
 		    $_dump = $this->_dumpHashArray($_value,$indent + 1); // "- "
 		    $_prefix = $this->_dumpIndent($indent)."- ";
 		    $out[] = $_prefix.substr($_dump,strlen($_prefix));
@@ -458,7 +458,7 @@ class miniYAML{
 	}
 
 	function _dumpHashArray($ar,$indent){
-		$out = array();
+		$out = [];
 		foreach($ar as $_key => $_value){
 		  $out[] = $this->_dumpIndent($indent).$this->_dumpString($_key).": ".$this->_dumpVar($_value,$indent);
 		}
