@@ -9,7 +9,7 @@
 *    $yaml = miniYAML::Dump($ary);
 *
 * TODO:
-*   Parser nenacte takovy zapis, ve kterem jsou vsechny radky odsazeny o spolecny indent.
+*   Parser doesn't handle input where all lines share a common base indentation.
 *
 * Changelog:
 *
@@ -18,11 +18,11 @@
 *     An associative array can be passed to miniYAML::Dump()
 *
 * 2008-04-09
-*     Vylepseno rozpoznavani asociativniho pole.
+*     Improved detection of associative arrays.
 *
 * 2008-01-28
-*      Prepracovani nacitani YAML dokumentu. Parser si nyni poradi i s indexovym pole,
-*      jeho prevky jsou jine pole (indexove nebo asociativni):
+*      Reworked YAML document loading. Parser now handles indexed arrays
+*      whose elements are other arrays (indexed or associative):
 *            ---
 *            - element 1
 *            - - element 2.1
@@ -31,7 +31,7 @@
 *              key2: val2
 *
 * 2008-01-25
-*     Doplnena schopnost zpracovat prazdne indexove pole.
+*     Added support for empty indexed arrays.
 *           ---
 *           status: success
 *           message: Ok
@@ -49,7 +49,7 @@
 *             expiry_date: 2014-01-11
 *
 * 2008-01-09
-*    Dodelana schopnost zpracovavat indexovana pole. Priklad YAML:
+*    Added support for parsing indexed arrays. Example YAML:
 *           ---
 *           command: check domains availability
 *           params:
@@ -73,11 +73,11 @@ class miniYAML{
 	}
 
 	/**
-	* Prevede YAML zapis na pole.
-	* 
+	* Converts a YAML string into a PHP array.
+	*
 	* @static
 	* @access public
-	* @param string $yaml      zapis struktury v YAML
+	* @param string $yaml      YAML-encoded structure
 	* @return array
 	*/
 	static function Load($yaml,$options = []){
@@ -98,10 +98,10 @@ class miniYAML{
 	}
 
 	/**
-	* Prevedete pole na do YAML zapisu.
-	* 
-	* Reverzni metoda k miniYAML::Load();
-	* 
+	* Converts a PHP array into a YAML string.
+	*
+	* Reverse of miniYAML::Load().
+	*
 	* @static
 	* @access public
 	* @param array $ar
@@ -158,7 +158,7 @@ class miniYAML{
 		$this->_Lines = [];
 		$got_structure_begin = false;
 		for($i=0;$i<count($ar);$i++){
-		  if(trim($ar[$i]) == "---"){ // zacatek nove struktury - muze byt v zapisu pouze 1x a to na jejim zacatku
+		  if(trim($ar[$i]) == "---"){ // start of structure — may appear only once, at the beginning
 		    if($got_structure_begin){ return null; }
 		    $got_structure_begin = true;
 		    continue;
@@ -170,8 +170,8 @@ class miniYAML{
 		}
 
 		$out = $this->_readVar($this->_Lines,$lines_read);
-		// nasledujici podminka zachyti situaci, kdyz nejsou zpracovany vsechny radky a uz mame nejaky hotovy vystup...
-		// muze se to tykat napr. tohoto neplatneho zapisu:
+		// The following condition catches situations where not all lines have been consumed
+		// but a result is already available — this can happen with invalid input such as:
 		//      ---
 		//      - jedna
 		//      - dve
@@ -183,7 +183,7 @@ class miniYAML{
 	}
 
 	/**
-	* Spocita mezery na zacatku radku.
+	* Counts leading spaces on a line.
 	*
 	* @access private
 	* @param string $line
@@ -195,11 +195,11 @@ class miniYAML{
 	}
 
 	/**
-	* Smaze z radky odsazeni.
+	* Strips indentation from a line.
 	*
 	* @access private
 	* @param string $line
-	* @param int $indent          bude-li -1, bude delka odsazeni urcena automaticky
+	* @param int $indent          if -1, the indentation length is determined automatically
 	* @return string
 	*/
 	function _stripIndent($line, $indent = -1){
@@ -210,18 +210,18 @@ class miniYAML{
 	}
 
 	/**
-	* Vysekne z pole radku blok s danym odsazenim.
+	* Cuts out a block of lines with the given indentation.
 	*
-	* Vybere vsechny radky, ktere maji alespon urcene odsazeni,
-	* ale i vsechny radky s odsazenim delsim.
+	* Selects all lines that have at least the specified indentation,
+	* as well as all lines with greater indentation.
 	*
-	* Zamerne vsak neni porovnavana delka odsazeni prvniho radku.
-	* Navic je prvnimu radku toto odsazeni automaticky nastaveno.
+	* The indentation of the first line is intentionally not compared.
+	* Instead, the first line's indentation is automatically set to the given value.
 	*
 	* @access public
-	* @param int $start_at    prvni index v poli
-	* @param int $indent       delka nejmensiho odsazeni
-	* @param string[]  $lines   pole radek; pokud nebude nastaveno, bude se uvazovat $this->_Lines
+	* @param int $start_at    first index in the array
+	* @param int $indent       minimum indentation length
+	* @param string[]  $lines   array of lines; if not set, $this->_Lines is used
 	* @return string[]
 	*/
 	function _cutOutBlock($start_at,$indent,$lines = null){
@@ -239,12 +239,12 @@ class miniYAML{
 	}
 
 	/**
-	* Provede vyseknuti bloku. Navic vsem radkum odstrani indent.
+	* Cuts out a block of lines and strips indentation from all of them.
 	*
 	* @access public
-	* @param int $start_at    prvni index v poli
-	* @param int $indent       delka nejmensiho odsazeni
-	* @param string[]  $lines   pole radek; pokud nebude nastaveno, bude se uvazovat $this->_Lines
+	* @param int $start_at    first index in the array
+	* @param int $indent       minimum indentation length
+	* @param string[]  $lines   array of lines; if not set, $this->_Lines is used
 	* @return string[]
 	*/
 	function _cutOutBlock_Stripped($start_at,$indent,$lines = null){
@@ -256,13 +256,13 @@ class miniYAML{
 	}
 
 	/**
-	* Nacte datovou strukturu z daneho pole radku.
+	* Reads a data structure from the given array of lines.
 	*
 	* @access private
 	* @param string[] $block
-	* @param int &$lines_read    pocet radku pole potrebnych pro nacteni struktury
-	* @param array $options      parametry nacitani
-	* @return mixed              indexove pole, hash pole nebo string
+	* @param int &$lines_read    number of lines consumed to read the structure
+	* @param array $options      parsing options
+	* @return mixed              indexed array, hash array, or string
 	*/
 	function _readVar($block,&$lines_read,$options = []){
 		$options += [
@@ -284,7 +284,7 @@ class miniYAML{
 			}
 		}
 
-		if(count($block)==1){ // toto je spatne!!!! zde zapadne i indexove pole o velikosti 1
+		if(count($block)==1){ // WARNING: single-element indexed arrays also fall into this branch
 		  $lines_read = 1;
 		  $out = trim($block[0]);
 		  if($out == "[]"){ return []; }
@@ -294,11 +294,11 @@ class miniYAML{
 	}
 
 	/**
-	* Nacte indexove pole z pole radku
-	* 
+	* Reads an indexed array from an array of lines.
+	*
 	* @access private
 	* @param string[] $block
-	* @param int &$lines_read    pocet radku pole potrebnych pro nacteni vraceneho pole
+	* @param int &$lines_read    number of lines consumed to read the returned array
 	* @return array
 	*/
 	function _readIndexedArray($block,&$lines_read){
@@ -311,18 +311,18 @@ class miniYAML{
 		  }
 		  $value_block = $this->_cutOutBlock_Stripped($i,2,$block);
 		  $out[] = $this->_readVar($value_block,$li);
-		  $i += $li-1; // -1 -> zaciname cist na akt. radku
+		  $i += $li-1; // -1 because the loop starts reading at the current line
 		}
 		$lines_read = $i;
 		return $out;
 	}
 
 	/**
-	* Nacte asociativni pole (hash) z pole radku.
-	* 
+	* Reads an associative array (hash) from an array of lines.
+	*
 	* @access private
 	* @param string[] $block
-	* @param int &$lines_read    pocet radku pole potrebnych pro nacteni vraceneho pole
+	* @param int &$lines_read    number of lines consumed to read the returned array
 	* @return array
 	*/
 	function _readHashArray($block,&$lines_read){
@@ -383,19 +383,19 @@ class miniYAML{
 	}
 
 	/*
-	 * Metody pro dumpovani.
+	 * Dumping methods.
 	 */
 
 	function _dumpVar($var,$indent = 0){
 		$out = [];
 		if($this->_isIndexedArray($var)){
 		  $out[] = count($var)==0 ? "[]" : "";
-		  $out[] = $this->_dumpIndexedArray($var,$indent); // indexove pole se tiskne se stejnym indentem
+		  $out[] = $this->_dumpIndexedArray($var,$indent); // indexed arrays are printed at the same indent level
 		}elseif(is_array($var)){
 		  $out[] = "";
 		  $out[] = $this->_dumpHashArray($var,$indent + 1);
 		}else{
-		  $out[] = $this->_dumpString($var); // schvalne je vynechan $indent, ident je pred klicem
+		  $out[] = $this->_dumpString($var); // $indent intentionally omitted — indent is placed before the key
 		}
 		return join("\n",$out);
 	}
