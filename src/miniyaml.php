@@ -398,6 +398,11 @@ class miniYAML{
 		}elseif(is_array($var)){
 		  $out[] = "";
 		  $out[] = $this->_dumpHashArray($var,$indent + 1);
+		}elseif(is_string($var) && strpos($var,"\n") !== false){
+		  $prefix = $this->_dumpIndent($indent + 1);
+		  $lines = explode("\n",$var);
+		  foreach($lines as &$line){ $line = $prefix.$line; }
+		  $out[] = "|\n".implode("\n",$lines);
 		}else{
 		  $out[] = $this->_dumpString($var); // $indent intentionally omitted — indent is placed before the key
 		}
