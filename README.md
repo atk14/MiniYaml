@@ -11,6 +11,7 @@ MiniYAML is a minimalistic YAML loader and dumper for PHP. It handles the subset
 - **Tiny footprint.** The entire implementation is ~350 lines of straightforward PHP.
 - **PHP template evaluation.** The built-in `InterpretPHP()` method lets you embed `<?= $var ?>` tags directly in YAML, making it easy to build environment-specific configuration without a separate templating step. No other mainstream YAML library offers this.
 - **Readable API.** Three static methods — `Load()`, `Dump()`, `InterpretPHP()` — cover all common use cases without configuration overhead.
+- **Runs on PHP 5.6 and up.** Works on legacy hosting and old codebases where modern libraries have already dropped support.
 
 Installation
 ------------
