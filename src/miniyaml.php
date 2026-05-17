@@ -195,21 +195,6 @@ class miniYAML{
 	}
 
 	/**
-	* Strips indentation from a line.
-	*
-	* @access protected
-	* @param string $line
-	* @param int $indent          if -1, the indentation length is determined automatically
-	* @return string
-	*/
-	protected function _stripIndent($line, $indent = -1){
-		if ($indent == -1){
-		  $indent = $this->_getIndent($line);
-		}  
-		return substr ($line, $indent);
-	}
-
-	/**
 	* Cuts out a block of lines with the given indentation.
 	*
 	* Selects all lines that have at least the specified indentation,
