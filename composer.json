@@ -1,7 +1,7 @@
 {
         "name": "atk14/mini-yaml",
         "type": "library",
-        "description": "Minimalistic YAML loader and dumper",
+        "description": "Minimalistic YAML loader and dumper for PHP supporting nested structures, block scalars and PHP template evaluation",
         "keywords": ["YAML"],
         "homepage": "https://github.com/atk14/MiniYaml",
         "license": ["MIT"],
