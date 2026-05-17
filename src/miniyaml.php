@@ -1,63 +1,15 @@
 <?php
 /**
-* YAML dumper & loader
+* Minimalistic YAML loader and dumper.
 *
-* It can dump and load associative or indexed arrays.
-* 
+* Supports hash and indexed arrays, nested structures, block scalars (| and >),
+* quoted strings, null values, and embedded PHP template evaluation.
+*
 * Usage:
-*    $ary = miniYAML::Load($yaml_str);
-*    $yaml = miniYAML::Dump($ary);
+*    $ar   = miniYAML::Load($yaml_string);
+*    $yaml = miniYAML::Dump($ar);
 *
-* TODO:
-*   Parser doesn't handle input where all lines share a common base indentation.
-*
-* Changelog:
-*
-* 2013-03-02
-*     Better string escaping
-*     An associative array can be passed to miniYAML::Dump()
-*
-* 2008-04-09
-*     Improved detection of associative arrays.
-*
-* 2008-01-28
-*      Reworked YAML document loading. Parser now handles indexed arrays
-*      whose elements are other arrays (indexed or associative):
-*            ---
-*            - element 1
-*            - - element 2.1
-*              - element 2.2
-*            - key1: val1
-*              key2: val2
-*
-* 2008-01-25
-*     Added support for empty indexed arrays.
-*           ---
-*           status: success
-*           message: Ok
-*           data: 
-*             domain: test.cz
-*             registrant: ZUZANA-PROKOPOVA
-*             nsset: HOSTING-NS
-*             admin: 
-*             - JAN-PROKOP
-*             - JANA-PROKOPOVA
-*             tempcontact: []
-*             
-*             registrar: REG-GENREG
-*             create_date: 2001-01-10
-*             expiry_date: 2014-01-11
-*
-* 2008-01-09
-*    Added support for parsing indexed arrays. Example YAML:
-*           ---
-*           command: check domains availability
-*           params:
-*             domains:
-*             - test1.cz
-*             - test2.cz
-*             - test3.cz
-*             - test4.cz
+* @see README.md for full documentation and list of limitations.
 */
 class miniYAML{
 
