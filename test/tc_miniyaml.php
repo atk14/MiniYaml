@@ -1,6 +1,36 @@
 <?php
 class tc_miniyaml extends tc_base{
 
+	function test_string(){
+		$data = "
+---
+String value
+		";
+
+		$value = miniYAML::Load($data);
+		$this->assertEquals("String value",$value);
+
+		//
+
+		$data = '
+---
+"Another string value"
+		';
+
+		$value = miniYAML::Load($data);
+		$this->assertEquals("Another string value",$value);
+
+		//
+
+		$data = "
+---
+https://www.example.com
+		";
+
+		$value = miniYAML::Load($data);
+		$this->assertEquals("https://www.example.com",$value);
+	}
+
 	function test_read_hash_array(){
 		$data = "
 ---
@@ -13,6 +43,17 @@ key2: value2
 		$this->assertEquals("value1",$ar["key1"]);
 		$this->assertEquals("value2",$ar["key2"]);
 
+		$data = "
+---
+key: value
+url: https://www.example.com
+		";
+		$ar = miniYAML::Load($data);
+		$this->assertTrue(is_array($ar));
+		$this->assertEquals(2,sizeof($ar));
+		$this->assertEquals(["key","url"],array_keys($ar));
+		$this->assertEquals("value",$ar["key"]);
+		$this->assertEquals("https://www.example.com",$ar["url"]);
 	}
 
 	function test_read_indexed_array(){
