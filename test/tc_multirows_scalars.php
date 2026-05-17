@@ -75,6 +75,28 @@ key3: value3
 		$this->assertEquals($original,miniYAML::Load(miniYAML::Dump($original)));
 	}
 
+	function test_dump_trailing_newline(){
+		// Strings ending with \n must not produce a trailing line of spaces in the output
+		$expected = trim('
+---
+key: |
+  line 1
+  line 2
+		');
+
+		// Single trailing newline — stripped before dump
+		$this->assertEquals($expected,trim(miniYAML::Dump(["key" => "line 1\nline 2\n"])));
+
+		// Multiple trailing newlines — all stripped
+		$this->assertEquals($expected,trim(miniYAML::Dump(["key" => "line 1\nline 2\n\n"])));
+
+		// No trailing spaces in the raw output
+		$yaml = miniYAML::Dump(["key" => "line 1\nline 2\n"]);
+		foreach(explode("\n",$yaml) as $line){
+			$this->assertEquals(rtrim($line),$line,"Line contains trailing whitespace: ".json_encode($line));
+		}
+	}
+
 	function test_empty_block_scalar(){
 		// Block scalar with no indented content — value must be "" and subsequent keys must be parsed correctly
 		$src = '

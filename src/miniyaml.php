@@ -396,7 +396,7 @@ class miniYAML{
 			$out[] = $this->_dumpHashArray($var,$indent + 1);
 		}elseif(is_string($var) && strpos($var,"\n") !== false){
 			$prefix = $this->_dumpIndent($indent + 1);
-			$lines = explode("\n",$var);
+			$lines = explode("\n",rtrim($var,"\n"));
 			foreach($lines as &$line){ $line = $prefix.$line; }
 			$out[] = "|\n".implode("\n",$lines);
 		}else{
