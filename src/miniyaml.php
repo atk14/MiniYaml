@@ -445,7 +445,6 @@ class miniYAML{
 				$_dump = $this->_dumpHashArray($_value,$indent + 1); // "- "
 				$_prefix = $this->_dumpIndent($indent)."- ";
 				$out[] = $_prefix.substr($_dump,strlen($_prefix));
-				//$out[] = $_prefix.$_dump;
 			}else{
 				$out[] = $this->_dumpIndent($indent)."- ".$this->_dumpVar($_value,$indent + 2); // "- "
 			}
