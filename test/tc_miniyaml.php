@@ -421,4 +421,22 @@ key2: "NULL"
 		'),trim($yaml));
 		
 	}
+
+	function test_unexpected_multiline_exception(){
+
+		$data = trim("
+---
+key:
+  line 1
+  line 2
+		");
+
+		try{
+			$a = miniYAML::Load($data);
+			$this->fail();
+		}catch(Exception $e){
+			$this->assertStringContains("Unexpected multi-line scalar value starting with: line 1",$e->getMessage());
+		}
+
+	}
 }

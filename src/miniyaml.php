@@ -284,13 +284,15 @@ class miniYAML{
 			}
 		}
 
-		if(count($block)==1){ // WARNING: single-element indexed arrays also fall into this branch
+		if(count($block)==1){
 		  $lines_read = 1;
 		  $out = trim($block[0]);
 		  if($out == "[]"){ return []; }
 		  $this->_unescapeString($out);
 		  return $out;
 		}
+
+		throw new Exception("Unexpected multi-line scalar value starting with: ".trim($block[0]));
 	}
 
 	/**
