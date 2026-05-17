@@ -219,7 +219,7 @@ empty_array: []
 	}
 
 	function test_cut_out_block(){
-		$yaml = new miniYAML();
+		$yaml = new miniYAML_proxy();
 		$data = [
 			"line 1",
 			"  - - line 2",
@@ -227,24 +227,24 @@ empty_array: []
 			"line 4"
 		];
 
-		$ar = $yaml->_cutOutBlock(0,0,$data);
+		$ar = $yaml->cutOutBlock(0,0,$data);
 		$this->assertEquals($data,$ar);
-		$ar = $yaml->_cutOutBlock_Stripped(0,0,$data);
+		$ar = $yaml->cutOutBlock_Stripped(0,0,$data);
 		$this->assertEquals($data,$ar);
 
-		$ar = $yaml->_cutOutBlock(1,2,$data);
+		$ar = $yaml->cutOutBlock(1,2,$data);
 		$this->assertEquals(["  - - line 2","    - line 3"],$ar);
-		$ar = $yaml->_cutOutBlock_Stripped(1,2,$data);
+		$ar = $yaml->cutOutBlock_Stripped(1,2,$data);
 		$this->assertEquals(["- - line 2","  - line 3"],$ar);
 
-		$ar = $yaml->_cutOutBlock(1,4,$data);
+		$ar = $yaml->cutOutBlock(1,4,$data);
 		$this->assertEquals(["    - line 2","    - line 3"],$ar);
-		$ar = $yaml->_cutOutBlock_Stripped(1,4,$data);
+		$ar = $yaml->cutOutBlock_Stripped(1,4,$data);
 		$this->assertEquals(["- line 2","- line 3"],$ar);
 
-		$ar = $yaml->_cutOutBlock(2,6,$data);
+		$ar = $yaml->cutOutBlock(2,6,$data);
 		$this->assertEquals(["      line 3"],$ar);
-		$ar = $yaml->_cutOutBlock_Stripped(2,6,$data);
+		$ar = $yaml->cutOutBlock_Stripped(2,6,$data);
 		$this->assertEquals(["line 3"],$ar);
 	}
 

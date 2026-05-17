@@ -152,7 +152,7 @@ class miniYAML{
 		return $__yaml;
 	}
 
-	function _load($yaml){
+	protected function _load($yaml){
 		$yaml = str_replace("\r","",$yaml);
 		$ar = explode("\n",$yaml);
 		$this->_Lines = [];
@@ -189,7 +189,7 @@ class miniYAML{
 	* @param string $line
 	* @return int
 	*/
-	function _getIndent($line){
+	protected function _getIndent($line){
 		preg_match("/^( *)/",(string)$line,$matches);
 		return strlen($matches[1]);
 	}
@@ -202,7 +202,7 @@ class miniYAML{
 	* @param int $indent          if -1, the indentation length is determined automatically
 	* @return string
 	*/
-	function _stripIndent($line, $indent = -1){
+	protected function _stripIndent($line, $indent = -1){
 		if ($indent == -1){
 		  $indent = $this->_getIndent($line);
 		}  
@@ -224,7 +224,7 @@ class miniYAML{
 	* @param string[]  $lines   array of lines; if not set, $this->_Lines is used
 	* @return string[]
 	*/
-	function _cutOutBlock($start_at,$indent,$lines = null){
+	protected function _cutOutBlock($start_at,$indent,$lines = null){
 		if(!isset($lines)){ $lines = &$this->_Lines; }
 		$out = [];
 		$out[] = str_repeat(" ",$indent).substr($lines[$start_at],$indent);
@@ -247,7 +247,7 @@ class miniYAML{
 	* @param string[]  $lines   array of lines; if not set, $this->_Lines is used
 	* @return string[]
 	*/
-	function _cutOutBlock_Stripped($start_at,$indent,$lines = null){
+	protected function _cutOutBlock_Stripped($start_at,$indent,$lines = null){
 		$lines = $this->_cutOutBlock($start_at,$indent,$lines);
 		for($i=0;$i<count($lines);$i++){
 		  $lines[$i] = substr($lines[$i],$indent);
@@ -264,7 +264,7 @@ class miniYAML{
 	* @param array $options      parsing options
 	* @return mixed              indexed array, hash array, or string
 	*/
-	function _readVar($block,&$lines_read,$options = []){
+	protected function _readVar($block,&$lines_read,$options = []){
 		$options += [
 		  "testing_for_array" => true
 		];
@@ -301,7 +301,7 @@ class miniYAML{
 	* @param int &$lines_read    number of lines consumed to read the returned array
 	* @return array
 	*/
-	function _readIndexedArray($block,&$lines_read){
+	protected function _readIndexedArray($block,&$lines_read){
 		$out = [];
 		$lines_read = 0;
 		for($i=0;$i<count($block);$i++){
@@ -325,7 +325,7 @@ class miniYAML{
 	* @param int &$lines_read    number of lines consumed to read the returned array
 	* @return array
 	*/
-	function _readHashArray($block,&$lines_read){
+	protected function _readHashArray($block,&$lines_read){
 		$out = [];
 		$lines_read = 0;
 		for($i=0;$i<count($block);$i++){
@@ -359,20 +359,20 @@ class miniYAML{
 		return $out;
 	}
 
-	function _isComment($line){
+	protected function _isComment($line){
 		if(preg_match("/^#/",$line)){ return true;}
 		return false;
 	}
 
-	function _isEmpty($line){
+	protected function _isEmpty($line){
 		return (strlen(trim($line))==0);
 	}
 
-	function _containsData($line){
+	protected function _containsData($line){
 		return !($this->_isComment($line) || $this->_isEmpty($line));
 	}
 
-	function _unescapeString(&$str){
+	protected function _unescapeString(&$str){
 		if(preg_match('/^("(.*)"|\'(.*)\')/',$str,$matches)){
 		  $str = end($matches);
 		  $str = preg_replace('/(\'\'|\\\\\')/',"'",$str);
@@ -390,7 +390,7 @@ class miniYAML{
 	 * Dumping methods.
 	 */
 
-	function _dumpVar($var,$indent = 0){
+	protected function _dumpVar($var,$indent = 0){
 		$out = [];
 		if($this->_isIndexedArray($var)){
 		  $out[] = count($var)==0 ? "[]" : "";
@@ -404,7 +404,7 @@ class miniYAML{
 		return join("\n",$out);
 	}
 
-	function _dumpString($str,$indent = 0){
+	protected function _dumpString($str,$indent = 0){
 		$patterns_to_escape = [
 		  "/^\\s+/", "/\\s+$/","/\\n/",
 		  "/^yes$/i", "/^on$/i", "/^\\+$/", "/^y$/", "/^true$/i",
@@ -436,13 +436,13 @@ class miniYAML{
 		return $this->_dumpIndent($indent).$str;
 	}
 
-	function _isIndexedArray($ar){
+	protected function _isIndexedArray($ar){
 		if(!is_array($ar)){ return false; }
 		$count = count($ar);
 		return $count === 0 || array_keys($ar) === range(0, $count - 1);
 	}
 
-	function _dumpIndexedArray($ar,$indent){
+	protected function _dumpIndexedArray($ar,$indent){
 		$out = [];
 		foreach($ar as $_value){
 		  if($this->_isIndexedArray($_value) && count($_value)>0){
@@ -461,7 +461,7 @@ class miniYAML{
 		return join("\n",$out);
 	}
 
-	function _dumpHashArray($ar,$indent){
+	protected function _dumpHashArray($ar,$indent){
 		$out = [];
 		foreach($ar as $_key => $_value){
 		  $out[] = $this->_dumpIndent($indent).$this->_dumpString($_key).": ".$this->_dumpVar($_value,$indent);
@@ -469,12 +469,12 @@ class miniYAML{
 		return join("\n",$out);
 	}
 
-	function _dumpIndent($indent){
+	protected function _dumpIndent($indent){
 		if($indent<=0){ return ""; }
 		return str_repeat(" ",$indent * 2);
 	}
 
-	function _escapeString($str){
+	protected function _escapeString($str){
 		return "\"".str_replace("\"","\\\"",(string)$str)."\"";
 	}
 }
