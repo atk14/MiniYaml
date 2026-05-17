@@ -434,12 +434,8 @@ class miniYAML{
 
   function _isIndexedArray($ar){
     if(!is_array($ar)){ return false; }
-    $expected_key = 0;
-    foreach(array_keys($ar) as $_key){
-      if(!is_int($_key) || $_key!=$expected_key){ return false; }
-      $expected_key++;
-    }
-    return true;
+    $count = count($ar);
+    return $count === 0 || array_keys($ar) === range(0, $count - 1);
   }
 
   function _dumpIndexedArray($ar,$indent){
