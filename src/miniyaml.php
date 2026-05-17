@@ -339,7 +339,11 @@ class miniYAML{
 		  $key = $matches[1];
 		  $_values = trim($matches[2]);
 		  $next_line_indent = $this->_getIndent($next_line);
-		  if($next_line_indent>0 || preg_match("/^- /",(string)$next_line)){
+		  if($_values === "|" || $_values === ">"){
+		    $value_block = $this->_cutOutBlock_Stripped($i+1,$next_line_indent,$block);
+		    $i += count($value_block);
+		    $value = $_values === "|" ? implode("\n",$value_block) : implode(" ",$value_block);
+		  }elseif($next_line_indent>0 || preg_match("/^- /",(string)$next_line)){
 		    $value_block = $this->_cutOutBlock_Stripped($i+1,$next_line_indent,$block);
 		    $value = $this->_readVar($value_block,$li);
 		    $i += $li;
