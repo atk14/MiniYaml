@@ -5,6 +5,13 @@ MiniYAML
 
 MiniYAML is a minimalistic YAML loader and dumper for PHP. It handles the subset of YAML commonly used for configuration files and API responses.
 
+**Why MiniYAML?**
+
+- **Single file, zero dependencies.** Drop `miniyaml.php` into your project and you are done — no Composer, no autoloader, no transitive dependencies.
+- **Tiny footprint.** The entire implementation is ~350 lines of straightforward PHP.
+- **PHP template evaluation.** The built-in `InterpretPHP()` method lets you embed `<?= $var ?>` tags directly in YAML, making it easy to build environment-specific configuration without a separate templating step. No other mainstream YAML library offers this.
+- **Readable API.** Three static methods — `Load()`, `Dump()`, `InterpretPHP()` — cover all common use cases without configuration overhead.
+
 Installation
 ------------
 
@@ -116,6 +123,21 @@ The following YAML features are **not** supported:
 - Explicit type tags (`!!str`, `!!int`, …)
 - Flow mappings and sequences (`{…}`, `[…]`) — except empty array `[]`
 - Documents with a common base indentation on all lines
+
+MiniYAML is well-suited for YAML you write and control yourself. If the input
+comes from an external tool or another language, it may use syntax that MiniYAML
+silently misparses or ignores.
+
+Alternatives
+------------
+
+If MiniYAML does not cover your use case, consider these alternatives:
+
+| Library | Notes |
+|---|---|
+| [symfony/yaml](https://github.com/symfony/yaml) | Pure PHP, covers most of YAML 1.2. The standard choice for full YAML support; works standalone without the Symfony framework. |
+| [ext-yaml](https://pecl.php.net/package/yaml) | PHP extension wrapping libyaml (C). Fastest option, full YAML 1.1 compliance. Requires server-level installation. |
+| [nette/neon](https://github.com/nette/neon) | Pure PHP, implements NEON — a YAML-like format with PHP-native types. Not YAML, but a comfortable alternative if you control both ends. |
 
 Testing
 -------
