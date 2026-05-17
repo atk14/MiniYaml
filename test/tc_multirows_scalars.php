@@ -74,4 +74,42 @@ key3: value3
 		];
 		$this->assertEquals($original,miniYAML::Load(miniYAML::Dump($original)));
 	}
+
+	function test_empty_block_scalar(){
+		// Block scalar with no indented content — value must be "" and subsequent keys must be parsed correctly
+		$src = '
+---
+key1: |
+key2: value2
+		';
+		$ar = miniYAML::Load($src);
+		$this->assertTrue(is_array($ar));
+		$this->assertEquals(2,count($ar));
+		$this->assertEquals("",$ar["key1"]);
+		$this->assertEquals("value2",$ar["key2"]);
+
+		// Same for folded
+		$src = '
+---
+key1: >
+key2: value2
+		';
+		$ar = miniYAML::Load($src);
+		$this->assertTrue(is_array($ar));
+		$this->assertEquals(2,count($ar));
+		$this->assertEquals("",$ar["key1"]);
+		$this->assertEquals("value2",$ar["key2"]);
+
+		// Block scalar as the last key in the document
+		$src = '
+---
+key1: value1
+key2: |
+		';
+		$ar = miniYAML::Load($src);
+		$this->assertTrue(is_array($ar));
+		$this->assertEquals(2,count($ar));
+		$this->assertEquals("value1",$ar["key1"]);
+		$this->assertEquals("",$ar["key2"]);
+	}
 }

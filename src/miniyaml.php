@@ -327,8 +327,12 @@ class miniYAML{
 			$_values = trim($matches[2]);
 			$next_line_indent = $this->_getIndent($next_line);
 			if($_values === "|" || $_values === ">"){
-				$value_block = $this->_cutOutBlock_Stripped($i+1,$next_line_indent,$block);
-				$i += count($value_block);
+				if($next_line_indent > 0){
+					$value_block = $this->_cutOutBlock_Stripped($i+1,$next_line_indent,$block);
+					$i += count($value_block);
+				}else{
+					$value_block = [];
+				}
 				$value = $_values === "|" ? implode("\n",$value_block) : implode(" ",$value_block);
 			}elseif($next_line_indent>0 || preg_match("/^- /",(string)$next_line)){
 				$value_block = $this->_cutOutBlock_Stripped($i+1,$next_line_indent,$block);
