@@ -54,6 +54,16 @@ url: https://www.example.com
 		$this->assertEquals(["key","url"],array_keys($ar));
 		$this->assertEquals("value",$ar["key"]);
 		$this->assertEquals("https://www.example.com",$ar["url"]);
+
+		$data = "
+---
+key1:
+  - value1
+		";
+		$ar = miniYAML::Load($data);
+		$this->assertTrue(is_array($ar));
+		$this->assertEquals(1,sizeof($ar));
+		$this->assertEquals(["value1"],$ar["key1"]);
 	}
 
 	function test_read_indexed_array(){
