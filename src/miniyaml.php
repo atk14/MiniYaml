@@ -407,7 +407,7 @@ class miniYAML{
 
 	protected function _dumpString($str,$indent = 0){
 		$patterns_to_escape = [
-			"/^\\s+/", "/\\s+$/","/\\n/",
+			"/^\\s+/", "/\\s+$/",
 			"/^yes$/i", "/^on$/i", "/^\\+$/", "/^y$/", "/^true$/i",
 			"/^no$/i", "/^off$/i", "/^-$/", "/^n$/", "/^false$/i",
 			"/^null$/i", "/^~$/", "/^$/",
