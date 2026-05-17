@@ -185,7 +185,7 @@ class miniYAML{
 	/**
 	* Counts leading spaces on a line.
 	*
-	* @access private
+	* @access protected
 	* @param string $line
 	* @return int
 	*/
@@ -197,7 +197,7 @@ class miniYAML{
 	/**
 	* Strips indentation from a line.
 	*
-	* @access private
+	* @access protected
 	* @param string $line
 	* @param int $indent          if -1, the indentation length is determined automatically
 	* @return string
@@ -218,7 +218,7 @@ class miniYAML{
 	* The indentation of the first line is intentionally not compared.
 	* Instead, the first line's indentation is automatically set to the given value.
 	*
-	* @access public
+	* @access protected
 	* @param int $start_at    first index in the array
 	* @param int $indent       minimum indentation length
 	* @param string[]  $lines   array of lines; if not set, $this->_Lines is used
@@ -241,7 +241,7 @@ class miniYAML{
 	/**
 	* Cuts out a block of lines and strips indentation from all of them.
 	*
-	* @access public
+	* @access protected
 	* @param int $start_at    first index in the array
 	* @param int $indent       minimum indentation length
 	* @param string[]  $lines   array of lines; if not set, $this->_Lines is used
@@ -258,7 +258,7 @@ class miniYAML{
 	/**
 	* Reads a data structure from the given array of lines.
 	*
-	* @access private
+	* @access protected
 	* @param string[] $block
 	* @param int &$lines_read    number of lines consumed to read the structure
 	* @param array $options      parsing options
@@ -296,7 +296,7 @@ class miniYAML{
 	/**
 	* Reads an indexed array from an array of lines.
 	*
-	* @access private
+	* @access protected
 	* @param string[] $block
 	* @param int &$lines_read    number of lines consumed to read the returned array
 	* @return array
@@ -320,7 +320,7 @@ class miniYAML{
 	/**
 	* Reads an associative array (hash) from an array of lines.
 	*
-	* @access private
+	* @access protected
 	* @param string[] $block
 	* @param int &$lines_read    number of lines consumed to read the returned array
 	* @return array
